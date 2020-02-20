@@ -32,7 +32,7 @@ func run() (err error) {
 	}
 	in := strings.Join(al, ",")
 
-	f := `SELECT from_address, receipt_status FROM %s WHERE block_timestamp > "%s" AND block_timestamp < "%s" AND from_address IN (%s)`
+	f := "SELECT `hash`," + `from_address, receipt_status FROM %s WHERE block_timestamp > "%s" AND block_timestamp < "%s" AND from_address IN (%s)`
 	query := fmt.Sprintf(f, ethbq.TransactionsTable, since, until, in)
 	it, err := c.Query(query)
 	if err != nil {
@@ -47,7 +47,7 @@ func run() (err error) {
 
 	for _, t := range tx {
 		if !t.Success() {
-			return fmt.Errorf("%d has failure tx", t.FromAddress)
+			return fmt.Errorf("%s has failure tx: %s", t.FromAddress, t.Hash)
 		}
 	}
 
